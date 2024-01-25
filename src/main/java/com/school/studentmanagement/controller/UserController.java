@@ -29,7 +29,7 @@ public class UserController {
 
 	
 	@PostMapping("/users/register")
-	//@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveUser( @RequestBody @Valid UserRequest userrequest){
 		return userService.saveUser(userrequest);
 	}
@@ -59,7 +59,7 @@ public class UserController {
 		return userService.registerAdmin(request);
 	}
 	
-	@PostMapping("/users")
+	@PostMapping("/users/add")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<ResponseStructure<UserResponse>> addOtherUser(@RequestBody UserRequest request){
 		return userService.addOtherUser(request);

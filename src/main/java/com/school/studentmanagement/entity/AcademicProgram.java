@@ -27,18 +27,19 @@ public class AcademicProgram {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 @Column(name = "program_id")
+	 
 	private int programId;
 	private ProgramType programtype;
 	private String ProgramName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	
 	@ManyToOne
 	School school;
 	
 	@ManyToMany
 	List<Subject> Slist;
 	
-    @OneToMany
+    @ManyToMany
 	private List<User> Userlist;
 }

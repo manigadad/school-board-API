@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import com.school.studentmanagement.requestDTO.SubjectRequest;
 import com.school.studentmanagement.responseDTO.AcademicProgramResponse;
 import com.school.studentmanagement.responseDTO.SubjectResponse;
+import com.school.studentmanagement.responseDTO.UserResponse;
 import com.school.studentmanagement.utility.ResponseStructure;
 
 public interface SubjectService {
@@ -18,7 +19,10 @@ public interface SubjectService {
 
 		public ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects();
 
-//		public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(int subjectId, int userId);
+		public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignSubjectToTeacher(int subjectId,
+				int userId);
+
+		public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(int subjectId, int userId);
 
 	
 }

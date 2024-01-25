@@ -31,6 +31,7 @@ public class Schedule {
 	private Duration breakLengthInMinutes;
 	private LocalTime lunchTime;
 	private Duration lunchLengthInMinutes;
+	
 	 public int getClassHoursLengthInMinutes() {
 	        return (int) classHoursLengthInMinutes.toMinutes();
 	    }

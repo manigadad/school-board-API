@@ -21,8 +21,6 @@ public interface UserService {
 	
 
 	ResponseEntity<ResponseStructure<UserResponse>> registerAdmin(UserRequest request);
-	
-	
 
 	ResponseEntity<ResponseStructure<UserResponse>> addOtherUser(UserRequest request);
 

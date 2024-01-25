@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +69,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 		
 		@Override
 		public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(
-		        int programId, int userId) {
+				 int userId,int programId) {
 		    AcademicProgram academicProgram = academicprogramrepository.findById(programId)
 		            .orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
 
@@ -139,8 +138,39 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 		public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUserToAcademicProgram(int programId,
 				int userId, AcademicProgramRequest academicprogramrequest) {
 			
-			return null;
+			AcademicProgram academicProgram = academicprogramrepository.findById(programId)
+					.orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
+
+			// Validate the user
+			User user = userrepository.findById(userId)
+					.orElseThrow(() -> new UserNotFoundByIdException("User not found"));
+
+			// Check if the user is an ADMIN
+			if (user.getUserRole() == UserRole.ADMIN) {
+				throw new IllegalRequestException("Admin cannot be associated with any Academic Program");
+			}
+			if (user.getUserRole() != UserRole.TEACHER && user.getUserRole() != UserRole.STUDENT) {
+				throw new IllegalRequestException("User must have role TEACHER or STUDENT.");
+			}
+
+			// Add the user to the academic program
+			if (!academicProgram.getUserlist().contains(user)) {
+				academicProgram.getUserlist().add(user);
+				academicprogramrepository.save(academicProgram);
+
+				// Return the response
+				ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
+				structure.setStatus(HttpStatus.CREATED.value());
+				structure.setMessage("User assigned to Academic Program successfully");
+				structure.setData(mapToAcademicProgramResponse(academicProgram));
+				return ResponseEntity.ok(structure);
+			} else {
+				throw new IllegalRequestException("User is already associated with the academic program");
+			}
+
+			
 		}
+		
 		
 		
 		

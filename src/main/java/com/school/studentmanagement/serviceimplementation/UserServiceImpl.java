@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService{
 				.isDeleted(isDeleted)
 				.build();
 	}
-	private UserResponse mapToUserResponse(User user, boolean isDeleted) {
+	 UserResponse mapToUserResponse(User user, boolean isDeleted) {
 		return UserResponse.builder()
 				.userId(user.getUserId())
 				.username(user.getUsername())
