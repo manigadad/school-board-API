@@ -46,7 +46,6 @@ public class SchoolController {
 	@RequestMapping(value="updateschool",method=RequestMethod.GET)
 	public School updatedschool(@RequestParam int  schoolId,@RequestBody School updatedschool) {
 		return schoolservice.updatedSchool(schoolId,updatedschool);
-	
 	}
 	
 	@DeleteMapping("/schools/{schoolId}")

@@ -1,5 +1,6 @@
 package com.school.studentmanagement.responseDTO;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
@@ -18,9 +19,9 @@ public class ScheduleResponse {
 	private LocalTime opensAt;
 	private LocalTime closesAt;
 	private int classHoursPerDay;
-	private int classHoursLengthInMinutes;
+	private Duration classHoursLengthInMinutes;
 	private LocalTime breakTime;
-	private int breakLengthInMinutes;
+	private Duration breakLengthInMinutes;
 	private LocalTime lunchTime;
-	private int lunchLengthInMinutes;
+	private Duration lunchLengthInMinutes;
 }

@@ -10,13 +10,17 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Schedule {
 
 	@Id
@@ -32,15 +36,5 @@ public class Schedule {
 	private LocalTime lunchTime;
 	private Duration lunchLengthInMinutes;
 	
-	 public int getClassHoursLengthInMinutes() {
-	        return (int) classHoursLengthInMinutes.toMinutes();
-	    }
-
-	    public int getBreakLengthInMinutes() {
-	        return (int) breakLengthInMinutes.toMinutes();
-	    }
-
-	    public int getLunchLengthInMinutes() {
-	        return (int) lunchLengthInMinutes.toMinutes();
-	    }
+	
 }

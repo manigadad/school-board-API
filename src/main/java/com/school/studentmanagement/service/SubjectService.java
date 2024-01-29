@@ -19,9 +19,6 @@ public interface SubjectService {
 
 		public ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects();
 
-		public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignSubjectToTeacher(int subjectId,
-				int userId);
-
 		public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(int subjectId, int userId);
 
 	

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.school.studentmanagement.requestDTO.SubjectRequest;
 import com.school.studentmanagement.responseDTO.AcademicProgramResponse;
+import com.school.studentmanagement.responseDTO.UserResponse;
 import com.school.studentmanagement.service.SubjectService;
 import com.school.studentmanagement.utility.ResponseStructure;
 
@@ -26,8 +27,8 @@ public class SubjectController {
 	}
 	
 	@PutMapping("/subjects/{subjectId}/users/{userId}")
-	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignSubjectToTeacher(@PathVariable int subjectId,@PathVariable int userId){
-		return subjectservice.assignSubjectToTeacher(subjectId,userId);
+	public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToTeacher(@PathVariable int subjectId,@PathVariable int userId){
+		return subjectservice.assignSubjectToUser(subjectId,userId);
 	}
 	
 }

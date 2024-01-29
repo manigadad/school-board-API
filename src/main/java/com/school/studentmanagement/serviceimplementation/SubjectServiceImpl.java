@@ -83,6 +83,10 @@ public class SubjectServiceImpl implements SubjectService {
 				})
 				.orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
 	}
+	
+	
+	
+	
 
 	@Override
 	public ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects() {
@@ -102,13 +106,11 @@ public class SubjectServiceImpl implements SubjectService {
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignSubjectToTeacher(int subjectId,
-			int userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
+	
+	
+	
+	
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(int subjectId, int userId) {
 
@@ -125,10 +127,7 @@ public class SubjectServiceImpl implements SubjectService {
 			throw new IllegalRequestException("Cannot assign subject to users with role ADMIN or STUDENT");
 		}
 
-		List<Subject> userSubjects = (List<Subject>) user.getSubject();
-		if (!userSubjects.contains(subject)) {
-			userSubjects.add(subject);
-			user.setSubject(subject); // Set the updated list of subjects to the user
+		user.setSubject(subject);
 			userrepository.save(user);
 
 			// Create a response structure
@@ -138,10 +137,7 @@ public class SubjectServiceImpl implements SubjectService {
 			responseStructure.setData(userserviceimpl.mapToUserResponse(user, false));
 
 			return new ResponseEntity<>(responseStructure, HttpStatus.OK);
-		} else {
-			throw new IllegalRequestException("Subject is already assigned to the user");
-		}
-	}
+		} 
 
 	SubjectResponse mapToSubjectResponses(Subject subject) {
 		return SubjectResponse.builder()

@@ -1,11 +1,16 @@
 package com.school.studentmanagement.entity;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.school.studentmanagement.enums.ClassStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,20 +20,31 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Data
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
-@Data
 @Getter
 @Setter
-public class Subject {
+@NoArgsConstructor
+
+public class ClassHour {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int subjectId;
+	private int classHoursId;
+	private LocalDateTime beginsAt;
+	private LocalDateTime endsAt;
+	private int roomNo;
 	
-	private String subjectName;
 	
-	@OneToMany(mappedBy = "subject")
-	private List<ClassHour> classHours;
+	private ClassStatus classstatus;
+	
+	@ManyToOne
+	private Subject subject;
+	
+	@ManyToOne
+	private User user;
+	
+	@ManyToOne
+	private AcademicProgram academicProgram;
 }

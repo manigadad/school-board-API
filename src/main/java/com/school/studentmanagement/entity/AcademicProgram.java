@@ -16,13 +16,17 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
+@Getter
+@Setter
 public class AcademicProgram {
 
 	@Id
@@ -42,4 +46,7 @@ public class AcademicProgram {
 	
     @ManyToMany
 	private List<User> Userlist;
+    
+    @OneToMany(mappedBy = "academicProgram")
+	private List<ClassHour> classHours;
 }

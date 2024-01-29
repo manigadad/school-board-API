@@ -2,7 +2,14 @@ package com.school.studentmanagement.utility;
 
 import org.springframework.stereotype.Component;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 @Component
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResponseStructure<T> {
 
 	private int status;

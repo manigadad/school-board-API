@@ -33,11 +33,13 @@ public class School {
 	private long ContactNo;
 	private String emailId;
 	private String Address;
-	
+
 	@OneToOne
 	private Schedule schedule;
+
+	@OneToMany(mappedBy = "school") 
+	List<AcademicProgram> aplist=new ArrayList<AcademicProgram>();
 	
-	
-	 @OneToMany(mappedBy = "school") 
-	    List<AcademicProgram> aplist=new ArrayList<AcademicProgram>();
+	@OneToMany(mappedBy = "school")
+	private List<User> users;
 }
