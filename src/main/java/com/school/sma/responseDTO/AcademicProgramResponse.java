@@ -24,4 +24,5 @@ public class AcademicProgramResponse {
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
 	List<Subject> Slist;
+	private boolean isDeleted;
 }

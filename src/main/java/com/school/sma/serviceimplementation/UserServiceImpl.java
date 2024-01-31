@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.school.sma.entity.User;
 import com.school.sma.enums.UserRole;
 import com.school.sma.exception.UserNotFoundByIdException;
+import com.school.sma.repository.AcademicProgramRepository;
+import com.school.sma.repository.ClassHourRepository;
 import com.school.sma.repository.UserRepository;
 import com.school.sma.requestDTO.UserRequest;
 import com.school.sma.responseDTO.UserResponse;
@@ -28,6 +30,13 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private ResponseStructure<UserResponse> responseStructure;
+	
+	@Autowired
+	ClassHourRepository classHourRepo;
+	
+	@Autowired
+	AcademicProgramRepository academicRepo;
+	
 	
 	
 	
@@ -68,6 +77,7 @@ public class UserServiceImpl implements UserService{
 				.map(user -> {
 					user.setDeleted(true);
 					//					userrepository.deleteById(userId);
+					repository.save(user);
 					responseStructure.setStatus(HttpStatus.OK.value());
 					responseStructure.setMessage("user deleted successfully");
 					responseStructure.setData(mapToUserResponse(user,true));
@@ -194,7 +204,22 @@ public class UserServiceImpl implements UserService{
 
 	}
 	
-
+	public void deleteUsers() {
+		repository.findByIsDeleted(true).forEach(user -> {
+	        if (user.isDeleted() && user.getUserRole() != UserRole.ADMIN) {
+	            user.getListAcademicPrograms().forEach(program->{
+	            	program.getUserlist().remove(user);
+	            	academicRepo.save(program);
+	            });
+	            user.getClassHours().forEach(classHour->{
+	            	classHour.setUser(null);
+	            	classHourRepo.save(classHour);
+	            });
+	            repository.delete(user);
+	        }
+	        System.err.println("DELETED");
+	    });
+	}
 
 
 }

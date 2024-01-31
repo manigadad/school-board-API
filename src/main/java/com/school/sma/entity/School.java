@@ -33,6 +33,8 @@ public class School {
 	private long ContactNo;
 	private String emailId;
 	private String Address;
+	
+	private boolean isDeleted;
 
 	@OneToOne
 	private Schedule schedule;

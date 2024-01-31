@@ -38,6 +38,8 @@ public class AcademicProgram {
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
 	
+	private boolean isDeleted;
+	
 	@ManyToOne
 	School school;
 	

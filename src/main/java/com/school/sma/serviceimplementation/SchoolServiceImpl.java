@@ -16,6 +16,7 @@ import com.school.sma.exception.UserNotFoundByIdException;
 import com.school.sma.repository.SchoolRepository;
 import com.school.sma.repository.UserRepository;
 import com.school.sma.requestDTO.SchoolRequest;
+import com.school.sma.responseDTO.AcademicProgramResponse;
 import com.school.sma.responseDTO.SchoolResponse;
 import com.school.sma.service.SchoolService;
 import com.school.sma.utility.ResponseStructure;
@@ -32,8 +33,8 @@ public class SchoolServiceImpl implements SchoolService {
 	UserRepository userrepository;
 	@Override
 	public ResponseEntity<ResponseStructure<SchoolResponse>> saveSchoool( SchoolRequest schoolrequest) {
-	   String username= SecurityContextHolder.getContext().getAuthentication().getName();
-	   
+		String username= SecurityContextHolder.getContext().getAuthentication().getName();
+
 		return userrepository.findByusername(username).map(u->{
 			if(u.getUserRole().equals(UserRole.ADMIN)) {
 				if(u.getSchool()==null) {
@@ -43,7 +44,7 @@ public class SchoolServiceImpl implements SchoolService {
 					userrepository.save(u);
 					structure.setStatus(HttpStatus.CREATED.value());
 					structure.setMessage("school object created Sucessfully");
-					structure.setData(mapToSchoolResponse(school));
+					structure.setData(mapToSchoolResponse(school, false));
 					return new ResponseEntity<ResponseStructure<SchoolResponse>>(structure,HttpStatus.CREATED);
 
 				}else
@@ -68,55 +69,65 @@ public class SchoolServiceImpl implements SchoolService {
 
 	@Override
 	public School updatedSchool(int schoolId, School updatedschool) {
-		
-			Optional<School> optional = schoolrepository.findById(schoolId);
-			if(optional.isPresent())
-			{
-				School existingschool= optional.get();
-				updatedschool.setSchoolId(existingschool.getSchoolId());
-				School school = schoolrepository.save(updatedschool);
-				return school;  
-			}
-			else {
-				return null;
-			}
+
+		Optional<School> optional = schoolrepository.findById(schoolId);
+		if(optional.isPresent())
+		{
+			School existingschool= optional.get();
+			updatedschool.setSchoolId(existingschool.getSchoolId());
+			School school = schoolrepository.save(updatedschool);
+			return school;  
 		}
-
-		@Override
-		public void deleteSchool(int schoolId) {
-			
-				// TODO Auto-generated method stub
-				schoolrepository.deleteById(schoolId);
-				
-			}
-
-		
-
-		private School mapToSchool(SchoolRequest schoolrequest) {
-			return School.builder()
-					.schoolName(schoolrequest.getSchoolName())
-					.ContactNo(schoolrequest.getContactNo())
-					.emailId(schoolrequest.getEmailId())
-					.Address(schoolrequest.getAddress())
-					.build();
+		else {
+			return null;
 		}
-		private SchoolResponse mapToSchoolResponse(School school) {
-			return SchoolResponse.builder()
-					.schoolName(school.getSchoolName())
-					.contactNo(school.getContactNo())
-					.emailId(school.getEmailId())
-					.address(school.getAddress())
-					.build();
-		}
-
-
-
-		@Override
-		public Optional<School> findSchool(int schoolId) {
-			
-			return Optional.empty();
-		}
-
-
-
 	}
+
+
+
+
+	private School mapToSchool(SchoolRequest schoolrequest) {
+		return School.builder()
+				.schoolName(schoolrequest.getSchoolName())
+				.ContactNo(schoolrequest.getContactNo())
+				.emailId(schoolrequest.getEmailId())
+				.Address(schoolrequest.getAddress())
+				.build();
+	}
+	private SchoolResponse mapToSchoolResponse(School school, boolean b) {
+		return SchoolResponse.builder()
+				.schoolName(school.getSchoolName())
+				.contactNo(school.getContactNo())
+				.emailId(school.getEmailId())
+				.address(school.getAddress())
+				.build();
+	}
+
+
+
+	@Override
+	public Optional<School> findSchool(int schoolId) {
+
+		return Optional.empty();
+	}
+
+
+
+	@Override
+	public ResponseEntity<ResponseStructure<SchoolResponse>> deleteSchool(int schoolId) {
+		return schoolrepository.findById(schoolId)
+				.map(school -> {
+					school.setDeleted(true);
+					//					
+					schoolrepository.save(school);
+					structure.setStatus(HttpStatus.OK.value());
+					structure.setMessage("School deleted successfully");
+					structure.setData(mapToSchoolResponse(school,true));
+
+					return new ResponseEntity<ResponseStructure<SchoolResponse>>(structure, HttpStatus.OK);
+				})
+				.orElseThrow(() -> new IllegalRequestException("School not found by id"));
+
+	}		
+
+}

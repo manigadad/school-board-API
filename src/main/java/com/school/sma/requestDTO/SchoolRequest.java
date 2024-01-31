@@ -18,4 +18,5 @@ public class SchoolRequest {
 	private long ContactNo;
 	private String emailId;
 	private String Address;
+	private boolean isDeleted;
 }

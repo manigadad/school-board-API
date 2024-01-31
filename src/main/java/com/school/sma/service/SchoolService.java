@@ -18,7 +18,9 @@ public interface SchoolService {
 
 	School updatedSchool(int schoolId, School updatedschool);
 
-	void deleteSchool(int schoolId);
+	ResponseEntity<ResponseStructure<SchoolResponse>> deleteSchool(int schoolId);
+
+	
 
 
 }

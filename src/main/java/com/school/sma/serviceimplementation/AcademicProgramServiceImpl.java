@@ -17,6 +17,7 @@ import com.school.sma.enums.UserRole;
 import com.school.sma.exception.IllegalRequestException;
 import com.school.sma.exception.UserNotFoundByIdException;
 import com.school.sma.repository.AcademicProgramRepository;
+import com.school.sma.repository.ClassHourRepository;
 import com.school.sma.repository.SchoolRepository;
 import com.school.sma.repository.UserRepository;
 import com.school.sma.requestDTO.AcademicProgramRequest;
@@ -39,6 +40,10 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 	@Autowired
 	private UserServiceImpl userServiceImpl;
 
+	@Autowired
+	private ClassHourRepository classhourrepository;
+
+
 
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveacademicprogram(int schoolId,
@@ -52,7 +57,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 
 			structure.setStatus(HttpStatus.CREATED.value());
 			structure.setMessage("Academic Program object created Successfully");
-			structure.setData(mapToAcademicProgramResponse(academicProgram));
+			structure.setData(mapToAcademicProgramResponse(academicProgram, false));
 			return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
 		}).orElseThrow(() -> new IllegalRequestException("School not found"));
 	}
@@ -65,7 +70,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 			List<AcademicProgram> academicPrograms = school.getAplist();
 			List<AcademicProgramResponse> responses = new ArrayList<>();
 			for (AcademicProgram academicProgram : academicPrograms) {
-				responses.add(mapToAcademicProgramResponse(academicProgram));
+				responses.add(mapToAcademicProgramResponse(academicProgram, false));
 			}
 			return responses;
 		} else {
@@ -108,7 +113,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 		ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
 		structure.setStatus(HttpStatus.CREATED.value());
 		structure.setMessage("User assigned to Academic Program successfully");
-		structure.setData(mapToAcademicProgramResponse(academicProgram));
+		structure.setData(mapToAcademicProgramResponse(academicProgram, false));
 		return ResponseEntity.ok(structure);
 	}
 
@@ -128,7 +133,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 				.endsAt(academicprogramrequest.getEndsAt())
 				.build();
 	}
-	public AcademicProgramResponse mapToAcademicProgramResponse(AcademicProgram academicProgram) {
+	public AcademicProgramResponse mapToAcademicProgramResponse(AcademicProgram academicProgram, boolean b) {
 		return AcademicProgramResponse.builder()
 				.programId(academicProgram.getProgramId())
 				.programtype(academicProgram.getProgramtype())
@@ -136,6 +141,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 				.beginsAt(academicProgram.getBeginsAt())
 				.endsAt(academicProgram.getEndsAt())
 				.Slist(academicProgram.getSlist())
+				.isDeleted(academicProgram.isDeleted())
 				.build();
 
 	}
@@ -168,7 +174,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 			ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
 			structure.setStatus(HttpStatus.CREATED.value());
 			structure.setMessage("User assigned to Academic Program successfully");
-			structure.setData(mapToAcademicProgramResponse(academicProgram));
+			structure.setData(mapToAcademicProgramResponse(academicProgram, false));
 			return ResponseEntity.ok(structure);
 		} else {
 			throw new IllegalRequestException("User is already associated with the academic program");
@@ -182,9 +188,9 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 	public ResponseEntity<ResponseStructure<List<User>>> fetchUsersByRoleInAcademicProgram (int programId,String role) {
 
 		List<User> users = academicprogramrepository.findById(programId).map(program -> userrepository.findByUserRoleAndListAcademicPrograms(UserRole.valueOf(role.toUpperCase()), program))
-		.orElseThrow();
-		
-		
+				.orElseThrow();
+
+
 
 		ResponseStructure<List<User>> responseStructure = new ResponseStructure<List<User>>();
 		responseStructure.setStatus(HttpStatus.OK.value());
@@ -195,7 +201,28 @@ public class AcademicProgramServiceImpl implements AcademicProgramService{
 
 	}
 
+	@Override
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> deleteAcademicProgram(int programId) {
+		return academicprogramrepository.findById(programId)
+				.map(program -> {
+					program.setDeleted(true);
+					//					userrepository.deleteById(userId);
+					academicprogramrepository.save(program);
+					structure.setStatus(HttpStatus.OK.value());
+					structure.setMessage("Academicprogram deleted successfully");
+					structure.setData(mapToAcademicProgramResponse(program,true));
 
+					return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.OK);
+				})
+				.orElseThrow(() -> new IllegalRequestException("Academicprogram not found by id"));
 
+	}
 
+	public void deleteprograms() {
+		List<AcademicProgram> programs =academicprogramrepository.findByIsDeleted(true);
+		programs.forEach(program -> {
+			classhourrepository.deleteAll(program.getClassHours());
+			academicprogramrepository.deleteAll(programs);
+		});
+	}
 }
